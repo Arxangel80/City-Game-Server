@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test connection</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="{{ url_for('static', filename='js/test.js') }}"></script>
+    <style>
+        .flash-message {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .flash-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .flash-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        body {
+            display: flex;
+            justify-content: space-evenly;
+            flex-wrap: wrap;
+        }
+
+        .box {
+            border: 2px black solid;
+            width: 400px;
+            margin-top: 6px;
+            max-height: 300px;
+        }
+
+        p {
+            margin: 4px;
+        }
+
+        .box>p {
+            text-align: center;
+        }
+
+        .input {
+            width: 90%;
+            height: 5px;
+            padding: 8px;
+            margin: 4px;
+        }
+
+        .button {
+            display: block;
+            padding: 10px;
+            width: 50%;
+            margin: 8px auto;
+        }
+
+        .chatWindow.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .chatHeader {
+            padding: 10px;
+            border-bottom: 2px solid black;
+            text-align: center;
+            position: relative;
+        }
+
+        .chatContent {
+            padding: 10px;
+            height: 200px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chatInput {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-top: 1px solid #ccc;
+            box-sizing: border-box;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .inputArea {
+            display: flex;
+            align-items: center;
+        }
+
+
+        .chatSendButton {
+            margin-left: 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .sendButton:hover {
+            background-color: #0056b3;
+        }
+
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+
+        .message.received {
+            background-color: #f1f0f0;
+            align-self: flex-start;
+        }
+
+        .message.sent {
+            background-color: #007bff;
+            color: white;
+            align-self: flex-end;
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="flash-message {{ category }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    {% if user %}
+    <div class="flash-message {{ category }}">
+        Logged in as: {{ user }}
+    </div>
+    {% endif %}
+    <div class="box">
+        <p>Send cooordinates WebSocket</p>
+        <div>
+            <p>User id</p>
+            <input id="coordinates_user_id" class="input" type="text" name="id" placeholder="User id" autofocus=""
+                value="1">
+            <button id="cooordinatesSendButton" class="button">Send cooordinates</button>
+            <div id="active_users">
+                {% for user in active_users %}
+                <p>User ID: {{ user.user_id }}, Longitude: {{ user.longitude }}, Latitude: {{ user.latitude }}</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="box">
+        <p>Create new session</p>
+        <form id="SessionForm" class="form" method="POST">
+            <button class="button">Create session</button>
+        </form>
+    </div>
+    <div class="box">
+        <p>Create new user</p>
+        <form class="form" method="POST" action="{{ url_for('user.signup') }}">
+            <div>
+                <div>
+                    <p>Email</p>
+                    <input class="input" type="email" name="email" placeholder="Email" autofocus=""
+                        value="TestTest@gmail.com">
+                </div>
+            </div>
+
+            <div>
+                <div>
+                    <p>Username</p>
+                    <input class="input" type="text" name="name" placeholder="Name" autofocus="" value="User1">
+                </div>
+            </div>
+
+            <div>
+                <div>
+                    <p>Password</p>
+                    <input class="input" type="password" name="password" placeholder="Password" value="password1">
+                </div>
+            </div>
+            <button class="button">Sign Up</button>
+        </form>
+    </div>
+    <div class="box">
+        <p>User Login</p>
+        <div>
+            <div>
+                <p>Username</p>
+                <input class="input" type="text" name="name" placeholder="Name" autofocus="" value="User1">
+            </div>
+        </div>
+
+        <div>
+            <div>
+                <p>Password</p>
+                <input class="input" type="password" name="password" placeholder="Password" value="password1">
+            </div>
+        </div>
+        <button id="loginButton" class="button" data-login-url="{{ url_for('user.user_login') }}"
+            data-test-page-url="{{ url_for('test.test_page') }}">Log In</button>
+    </div>
+    <div class="box">
+        <p>Completing task</p>
+        <div>
+            <div>
+                <p>Task id</p>
+                <input class="input" type="text" name="name" placeholder="Name" autofocus="" value="TestName">
+            </div>
+        </div>
+        <button id="CompletingTaskButton" class="button">Complete task</button>
+    </div>
+    <div class="box">
+        <div class="chatHeader">Chat</div>
+        <div class="chatContent">
+            <!-- <div class="message received">
+                <div class="messageText">Hello, how can I help you?</div>
+            </div>
+            <div class="message sent">
+                <div class="messageText">I need help with quest.</div>
+            </div> -->
+        </div>
+        <div class="inputArea">
+            <input id="chatInput" type="text" class="chatInput" placeholder="Enter a message...">
+            <button id="chatSendButton" class="chatSendButton">Send</button>
+        </div>
+    </div>
+    <div class="box">
+        <p>Join session</p>
+        <form class="form" method="POST" action="{{ url_for('user.join_session') }}">
+            <div>
+                <div>
+                    <p>Session id</p>
+                    <input class="input" type="text" name="session_id" placeholder="Session id" autofocus="" value="">
+                </div>
+            </div>
+            <button class="button">Join session</button>
+        </form>
+    </div>
+    <div class="box">
+        <p>Logout</p>
+        <form id="Logout" class="form" method="POST" action="{{ url_for('user.user_logout') }}">
+            <button class="button">Logout</button>
+        </form>
+    </div>
+</body>
+
+</html>

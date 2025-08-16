@@ -1,0 +1,266 @@
+body {
+    margin: 0px;
+}
+
+.content {
+    display: grid;
+    grid-template-columns: 0.8fr 3fr;
+    grid-template-rows: 3fr 0.1fr;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+    height: 100vh;
+}
+
+.sessionContainer {
+    grid-area: 1 / 1 / 3 / 2;
+    overflow-y: auto;
+    min-width: max-content;
+    border-right: 4px solid black;
+}
+
+.mapChatContainer {
+    grid-area: 1 / 2 / 2 / 3;
+    height: 100%;
+    position: relative;
+}
+
+.mapContainer {
+    width: 100%;
+    height: 100%;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+}
+
+.infoContainer {
+    border-top: 4px solid black;
+    grid-area: 2 / 2 / 3 / 3;
+}
+
+.session {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 15%;
+    width: 95%;
+    min-width: fit-content;
+    background-color: #f6f5f5;
+    border-radius: 12px;
+    margin: 1vh;
+    cursor: pointer;
+    font-size: 1.3em;
+}
+
+.session:hover {
+    background-color: #d7d7d7;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.session.active {
+    background-color: #a7a7a7;
+    color: #fff;
+}
+
+.session>p {
+    margin: 0.5em 12px;
+}
+
+.logoutButton {
+    cursor: pointer;
+}
+
+.tasksInfoContainer {
+    display: none;
+    justify-content: space-evenly;
+}
+
+.arrowContainer {
+    margin-top: -17px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.arrowContainer>p {
+    margin: 0px;
+}
+
+
+.arrow {
+    border: solid black;
+    border-width: 3px 10px 10px 3px;
+    display: inline-block;
+    padding: 8px;
+    cursor: pointer;
+    background-color: white;
+}
+
+.up {
+    transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
+}
+
+.down {
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+}
+
+.taskInfoCard {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    max-width: 12vw;
+    border: 2px solid black;
+    background-color: #f6f5f5;
+    border-radius: 12px;
+    margin: 6px;
+    font-size: 1.1em;
+}
+
+.taskInfoCard>p {
+    margin: 0.5em 0px;
+}
+
+.chatContainer {
+    position: absolute;
+    display: flex;
+    justify-content: end;
+    width: 100%;
+    top: 10vh;
+    z-index: 1;
+}
+
+.chatIcon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    height: auto;
+    cursor: pointer;
+    border-radius: 10%;
+    background-color: whitesmoke;
+    border: #007bff solid 3px;
+    padding: 4px;
+    margin: 8px;
+}
+
+
+.chatWindow {
+    width: 300px;
+    height: auto;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    z-index: 1;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+    opacity: 0;
+    visibility: hidden;
+    margin: 6px;
+}
+
+.chatWindow.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.chatHeader {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 10px 10px 0 0;
+    text-align: center;
+    position: relative;
+}
+
+.chatContent {
+    padding: 10px;
+    height: 300px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.chatInput {
+    width: 100%;
+    padding: 10px;
+    border: none;
+}
+
+
+.closeChatButton {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    font-size: 24px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+    background-color: #fff;
+    color: #007bff;
+    border: 2px solid #007bff;
+}
+
+.inputArea {
+    display: flex;
+    align-items: center;
+    border-top: 1px solid #ccc;
+    box-sizing: border-box;
+    border-radius: 0 0 10px 10px;
+}
+
+.message {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 10px;
+    max-width: 80%;
+}
+
+.message.received {
+    background-color: #f1f0f0;
+    align-self: flex-start;
+}
+
+.message.sent {
+    background-color: #007bff;
+    color: white;
+    align-self: flex-end;
+}
+
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    height: auto;
+    cursor: pointer;
+    border-radius: 12px;
+    background-color: #007bff;
+    color: white;
+    border: 2px solid #0056b3;
+    padding: 8px 16px;
+    margin: 4px;
+    font-size: 16px;
+    text-align: center;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #0056b3;
+    border-color: #004080;
+}
+
+.button:active {
+    background-color: #004080;
+    border-color: #003366;
+}

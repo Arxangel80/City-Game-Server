@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City game admin panel</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</head>
+
+<body>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class=flashes>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    {% block body %}{% endblock %}
+    <div id="content" class="content">
+        <div class="sessionContainer">
+            <form id="logoutForm" action="{{ url_for('dashboard.admin_logout') }}" method="POST">
+                <button type="submit" class="logoutButton button"
+                    onclick="return confirm('Are you sure you want to log out?');">Logout</button>
+            </form>
+            {% for session in sessions %}
+            <div data-session-id="{{ session.id }}" class="session">
+                <p>{{ session.host_name }}</p>
+                <p>Progress {{ session.progress }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="mapChatContainer">
+            <div class="chatContainer">
+                <div id="chatButton" class="chatIcon">
+                    <svg fill="#000000" height="48px" width="48px" version="1.1" id="Capa_1"
+                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                        viewBox="0 0 60 60" xml:space="preserve">
+                        <path
+                            d="M54,2H6C2.748,2,0,4.748,0,8v33c0,3.252,2.748,6,6,6h28.558l9.702,10.673C44.453,57.885,44.724,58,45,58
+                                                c0.121,0,0.243-0.022,0.36-0.067C45.746,57.784,46,57.413,46,57V47h8c3.252,0,6-2.748,6-6V8C60,4.748,57.252,2,54,2z M12,15h15
+                                                c0.553,0,1,0.448,1,1s-0.447,1-1,1H12c-0.553,0-1-0.448-1-1S11.447,15,12,15z M46,33H12c-0.553,0-1-0.448-1-1s0.447-1,1-1h34
+                                                c0.553,0,1,0.448,1,1S46.553,33,46,33z M46,25H12c-0.553,0-1-0.448-1-1s0.447-1,1-1h34c0.553,0,1,0.448,1,1S46.553,25,46,25z" />
+                    </svg>
+                </div>
+                <div id="chatWindow" class="chatWindow">
+                    <div class="chatHeader">Chat<span id="closeChatButton" class="closeChatButton">&times;</span></div>
+                    <div class="chatContent">
+                        <div class="message sent">
+                            <div class="messageText">Hello, how can I help you?</div>
+                        </div>
+                        <div class="message received">
+                            <div class="messageText">I need help with quest.</div>
+                        </div>
+                        <div class="message sent">
+                            <div class="messageText">With which quest you need help?</div>
+                        </div>
+                        <div class="message received">
+                            <div class="messageText">This one with ciphered text</div>
+                        </div>
+                    </div>
+                    <div class="inputArea">
+                        <input type="text" class="chatInput" placeholder="Enter a message...">
+                        <button class="button">Send</button>
+                    </div>
+                </div>
+            </div>
+            <div class="mapContainer">
+                <div id="map"></div>
+            </div>
+        </div>
+        <div class="infoContainer">
+            <div class="arrowContainer">
+                <p><i id="arrow" class="arrow up"></i></p>
+            </div>
+            <div id="tasksInfoContainer" class="tasksInfoContainer">
+            </div>
+        </div>
+    </div>
+    <script>(g => { var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {}); var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => { await (a = m.createElement("script")); e.set("libraries", [...r] + ""); for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]); e.set("callback", c + ".maps." + q); a.src = `https://maps.${c}apis.com/maps/api/js?` + e; d[q] = f; a.onerror = () => h = n(Error(p + " could not load.")); a.nonce = m.querySelector("script[nonce]")?.nonce || ""; m.head.append(a) })); d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)) })
+            ({ key: "AIzaSyA7AFij3UYPmAgwoDV6EifwjTL_gZOfpPU", v: "weekly" });</script>
+</body>
+
+</html>

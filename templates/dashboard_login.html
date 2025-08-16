@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>City game admin panel</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+
+<body>
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <ul class=flashes>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% endwith %}
+  {% block body %}{% endblock %}
+
+  <div id="loginScreen">
+    <div id="loginForm">
+      <h2>Login</h2>
+      <form action="{{ url_for('dashboard.admin_login') }}" method="post">
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <div class="remember-me">
+          <input type="checkbox" name="remember" id="remember">
+          <label for="remember">Remember me</label>
+        </div>
+
+        <button type="submit">Login</button>
+      </form>
+    </div>
+  </div>
+</body>
+
+</html>
